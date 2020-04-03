@@ -6,10 +6,10 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("KeeTermSSHProfile")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Generate SSH profiles for terminals")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("KeeTermSSHProfile")]
+[assembly: AssemblyCompany("Vetési Zoltán")]
+[assembly: AssemblyProduct("KeePass Plugin")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

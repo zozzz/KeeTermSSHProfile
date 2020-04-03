@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KeeTermSSHProfile
+using KeeTermSSHProfile;
+
+namespace KeeTermSSHProfile.Generators
 {
-    public class Class1
-    {
+    class WindowsTerminal : IGenerator {
     }
 }
