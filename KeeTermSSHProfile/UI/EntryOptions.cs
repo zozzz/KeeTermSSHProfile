@@ -40,8 +40,17 @@ namespace KeeTermSSHProfile.UI
             if (pwEntryForm != null)
             {
                 InitialSettings = EntrySettings.Load(pwEntryForm.EntryRef);
-                CurrentSettings = InitialSettings.Clone();
-                UpdateControls(InitialSettings);
+
+                if (InitialSettings == null)
+                {
+                    CurrentSettings = new EntrySettings();
+                }
+                else
+                {
+                    CurrentSettings = InitialSettings.Clone();
+                }
+                
+                UpdateControls(CurrentSettings);
             }
 
             btnAdd.Enabled = true;
@@ -61,7 +70,7 @@ namespace KeeTermSSHProfile.UI
 
         private void testValueInp_TextChanged(object sender, EventArgs e)
         {
-            CurrentSettings.test = (sender as TextBox).Text;            
+            
         }
 
         private void sshEntries_SelectedIndexChanged(object sender, EventArgs e)

@@ -34,8 +34,12 @@
     <Reference Include="KeePass">
       <HintPath>..\..\..\Downloads\KeePass-2.44\KeePass.exe</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -48,6 +52,7 @@
   <ItemGroup>
     <Compile Include="EntrySettings.cs" />
     <Compile Include="Generator.cs" />
+    <Compile Include="Generators\FluentTerminal.cs" />
     <Compile Include="Generators\WindowsTerminal.cs" />
     <Compile Include="KeeTermSSHProfileExt.cs" />
     <Compile Include="GlobalSettings.cs" />
@@ -58,11 +63,22 @@
     <Compile Include="UI\EntryOptions.Designer.cs">
       <DependentUpon>EntryOptions.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\EntryPageOverride.cs" />
+    <Compile Include="UI\GenEntryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="UI\GlobalOptions.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UI\GlobalOptions.Designer.cs">
       <DependentUpon>GlobalOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Helper.cs" />
+    <Compile Include="UI\Playground.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Playground.Designer.cs">
+      <DependentUpon>Playground.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -72,6 +88,12 @@
     <EmbeddedResource Include="UI\GlobalOptions.resx">
       <DependentUpon>GlobalOptions.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Playground.resx">
+      <DependentUpon>Playground.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

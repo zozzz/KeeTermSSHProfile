@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -25,8 +26,7 @@ namespace KeeTermSSHProfile
             if (host == null) return false;
             this.host = host;
             this.options = GlobalSettings.Load(host);
-               
-
+            
             host.MainWindow.FileSaved += OnFileSaved;
             GlobalWindowManager.WindowAdded += OnWindowAdded;
 
@@ -37,28 +37,58 @@ namespace KeeTermSSHProfile
             host.MainWindow.FileSaved -= OnFileSaved;
         }
 
-        private void OnWindowAdded(object sender, GwmWindowEventArgs e)
+        private void OnWindowAdded(object s, GwmWindowEventArgs e)
         {
-            var pwEntryForm = e.Form as PwEntryForm;
+            var pwEntryForm = e.Form as PwEntryForm;            
             if (pwEntryForm != null)
             {
                 var entryOptions = new UI.EntryOptions(this);
-                pwEntryForm.Shown += (s, e2) =>
+                pwEntryForm.Shown += (s2, e2) =>
                 {
-                    AddTab(pwEntryForm, entryOptions);
-                };
-                var foundControls = pwEntryForm.Controls.Find("m_btnOK", true);
-                var okButton = foundControls[0] as Button;
-                okButton.GotFocus += (s, e2) =>
-                {
-                    entryOptions.CurrentSettings.Save(pwEntryForm.EntryBinaries);
-                };
+                    var pageOverride = new UI.EntryPageOverride(pwEntryForm);
+
+                    var foundControls = pwEntryForm.Controls.Find("m_btnOK", true);
+                    var okButton = foundControls[0] as Button;
+                    okButton.GotFocus += (s3, e3) =>
+                    {
+                        Debug.Print("okButton.GotFocus");
+                        pageOverride.Save();                        
+                    };
+
+                    // UpdateKeeEntryPanel(pwEntryForm);
+                    /*
+                    var btn = new System.Windows.Forms.Button();
+                    btn.Location = new System.Drawing.Point(383, 67);
+                    btn.Name = "btnRemove";
+                    btn.Size = new System.Drawing.Size(75, 23);
+                    btn.TabIndex = 3;
+                    btn.Text = "Remove";
+                    btn.UseVisualStyleBackColor = true;
+                    // pwEntryForm.Controls.Add(btn);
+
+                    var foundControlsX = pwEntryForm.Controls.Find("m_tabMain", true);
+                    if (foundControlsX.Length != 1)
+                    {
+                        return;
+                    }
+
+                    var tabControl = foundControlsX[0] as TabControl;
+                    if (tabControl == null)
+                    {
+                        return;
+                    }
+
+                    tabControl.Controls[0].Controls.Add(btn);
+
+                    // AddTab(pwEntryForm, entryOptions);
+                    */
+                };                
             }
 
             var optionsForm = e.Form as OptionsForm;
             if (optionsForm != null)
             {
-                optionsForm.Shown += (s, e2) =>
+                optionsForm.Shown += (s2, e2) =>
                 {
                     AddTab(optionsForm, new UI.GlobalOptions(this));                    
                 };                
@@ -66,9 +96,7 @@ namespace KeeTermSSHProfile
         }
 
         private void OnFileSaved(object sender, FileSavedEventArgs e) {
-            MessageService.ShowInfo("KeeTermSSHProfileExt has been notified that the user tried to save to the following file:",
-                e.Database.IOConnectionInfo.Path, "Result: " +
-                (e.Success ? "success." : "failed."));
+            Generator.UpdateAll(e.Database);            
         }
 
         // Utilities
@@ -101,6 +129,56 @@ namespace KeeTermSSHProfile
             newTab.Controls.Add(aPanel);
             aPanel.Dock = DockStyle.Fill;
             tabControl.Controls.Add(newTab);            
+        }
+
+        private void UpdateKeeEntryPanel(Form form)
+        {
+            var entryTab = FindControl<TabPage>(form, "m_tabEntry");
+            if (entryTab == null)
+            {
+                return;
+            }
+            Debug.Print("entryTab found");
+
+            var notes = FindControl<KeePass.UI.CustomRichTextBoxEx>(entryTab, "m_rtNotes");
+            if (notes == null)
+            {
+                return;
+            }
+
+            Debug.Print("Notes found");
+            notes.Size = new System.Drawing.Size(374, 80);
+
+            /*
+            var foundControls = form.Controls.Find("m_tabMain", true);
+            if (foundControls.Length != 1)
+            {
+                return;
+            }
+
+            var tabControl = foundControls[0] as TabControl;
+            if (tabControl == null)
+            {
+                return;
+            }
+
+            var basicTab = tabControl.Controls[0];
+
+            var richEdit = basicTab.Controls.Find("m_rtNotes", true);
+            */
+
+        }
+
+        private T FindControl<T>(Control ctrl, string name) where T: Control
+        {
+            var found = ctrl.Controls.Find(name, true);
+            Debug.Print("Find: " + name + " len: " + found.Length.ToString());
+            if (found.Length != 1)
+            {
+                return null;
+            }
+
+            return found[0] as T;
         }
     }
 }
